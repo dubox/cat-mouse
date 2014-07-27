@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,12 +33,7 @@ body{margin:0;padding:0;}
 </head>
 
 <body>
-<div id="_grib">
-
-	  
-	  
-	  
-	  </div>
+<div id="_grib"></div>
 	  
 	  
 <script>
@@ -114,7 +110,7 @@ function _go(){
 			window.mOc[countGo] = _cat.clone();
 		}
 		$('#_grib div').eq(Math.round(Math.random()*(countBlock-1))).html(window.mOc[countGo]);
-		alert(window.mOc.lenth);
+		//alert(window.mOc.lenth);
 		countGo++;
 		_go();
 	},500);
