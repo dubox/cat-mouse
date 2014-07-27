@@ -1,0 +1,139 @@
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+<!-- 可选的Bootstrap主题文件（一般不用引入） -->
+<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<style>
+body{margin:0;padding:0;}
+*{-webkit-user-select:none;-moz-user-select:none;user-select:none;-o-user-select:none;-ms-user-select:none;}
+#_grib {position: absolute;right:0;height:340px;border:solid 0px #000;background-color: #eee;}
+
+#_grib div{position:absolute;border:solid 0px #000;}
+[class*="col-"] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background-color: #eee;
+  background-color: rgba(86,61,124,.15);
+  border: 0px solid #ddd;
+  border: 0px solid rgba(86,61,124,.2);
+}
+</style>
+<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+
+</head>
+
+<body>
+<div id="_grib">
+
+	  
+	  
+	  
+	  </div>
+	  
+	  
+<script>
+var _win_width,_win_height;
+_win_width = $(window).width();
+	_win_height = $(window).height();
+	
+	if(_win_width > _win_height){
+		$("#_grib").width(_win_height);
+		$("#_grib").height(_win_height);
+		
+	}else{
+		$("#_grib").width(_win_width);
+		$("#_grib").height(_win_width);
+	}
+	
+//网格的行数和列数
+var row = 8;	//
+var cos = 8;
+var countBlock = row*cos;
+createBlock(row,cos);
+
+
+	
+
+
+function createBlock(row,cos){
+	//
+	var _gribW = $('#_grib').width();	
+	var _gribH = $('#_grib').height();
+
+	//格子的尺寸 亦作为格子（#_grib div）的大小
+	var BlockW = _gribW/cos;
+	var BlockH = _gribH/row;
+
+	//清除所有格子
+	$('#_grib').children().remove();
+
+	//生成格子
+	for(var j=0;j<row;j++){
+		for(var i=0;i<cos;i++){
+			
+			$('#_grib').append('<div style="top:'+j*BlockH+'px;left:'+i*BlockW+'px;width:'+BlockW+'px;height:'+BlockH+'px;"></div>');
+		}
+	}
+
+}
+	$(window).resize(function(){
+		if($(window).width() > $(window).height()){
+			$("#_grib").width($(window).height());
+			$("#_grib").height($(window).height());
+		}else{
+			$("#_grib").width($(window).width());
+			$("#_grib").height($(window).width());
+		}
+		createBlock(row,cos);
+	});
+	
+	
+var _mouse = $('<div style="width:100%;height:100%;background:red;"></div>');
+var _cat = $('<div style="width:100%;height:100%;background:green;"></div>');
+var countGo = 0;
+window.mOc = new Array();
+
+_go();
+_re();
+function _go(){
+	setTimeout(function(){
+
+		//随机选择出现mouse or cat
+		if(Math.random() > 0.2){
+			window.mOc[countGo] = _mouse.clone();
+		}else{
+			window.mOc[countGo] = _cat.clone();
+		}
+		$('#_grib div').eq(Math.round(Math.random()*(countBlock-1))).html(window.mOc[countGo]);
+		alert(window.mOc.lenth);
+		countGo++;
+		_go();
+	},500);
+}
+function _re(){
+	setTimeout(function(){//alert(window.mOc.shift());
+			//window.mOc.shift().remove();
+			_re();
+		},1000);
+}
+
+</script>
+
+
+
+
+
+
+
+
+
+</body></html>
