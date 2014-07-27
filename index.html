@@ -1,10 +1,10 @@
 <html><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- ĞÂ Bootstrap ºËĞÄ CSS ÎÄ¼ş -->
+<!-- æ–° Bootstrap æ ¸å¿ƒ CSS æ–‡ä»¶ -->
 <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
-<!-- ¿ÉÑ¡µÄBootstrapÖ÷ÌâÎÄ¼ş£¨Ò»°ã²»ÓÃÒıÈë£© -->
+<!-- å¯é€‰çš„Bootstrapä¸»é¢˜æ–‡ä»¶ï¼ˆä¸€èˆ¬ä¸ç”¨å¼•å…¥ï¼‰ -->
 <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 <style>
 body{margin:0;padding:0;}
@@ -21,10 +21,10 @@ body{margin:0;padding:0;}
   border: 0px solid rgba(86,61,124,.2);
 }
 </style>
-<!-- jQueryÎÄ¼ş¡£Îñ±ØÔÚbootstrap.min.js Ö®Ç°ÒıÈë -->
+<!-- jQueryæ–‡ä»¶ã€‚åŠ¡å¿…åœ¨bootstrap.min.js ä¹‹å‰å¼•å…¥ -->
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 
-<!-- ×îĞÂµÄ Bootstrap ºËĞÄ JavaScript ÎÄ¼ş -->
+<!-- æœ€æ–°çš„ Bootstrap æ ¸å¿ƒ JavaScript æ–‡ä»¶ -->
 <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 
@@ -54,7 +54,7 @@ _win_width = $(window).width();
 		$("#_grib").height(_win_width);
 	}
 	
-//Íø¸ñµÄĞĞÊıºÍÁĞÊı
+//ç½‘æ ¼çš„è¡Œæ•°å’Œåˆ—æ•°
 var row = 8;	//
 var cos = 8;
 var countBlock = row*cos;
@@ -69,14 +69,14 @@ function createBlock(row,cos){
 	var _gribW = $('#_grib').width();	
 	var _gribH = $('#_grib').height();
 
-	//¸ñ×ÓµÄ³ß´ç Òà×÷Îª¸ñ×Ó£¨#_grib div£©µÄ´óĞ¡
+	//æ ¼å­çš„å°ºå¯¸ äº¦ä½œä¸ºæ ¼å­ï¼ˆ#_grib divï¼‰çš„å¤§å°
 	var BlockW = _gribW/cos;
 	var BlockH = _gribH/row;
 
-	//Çå³ıËùÓĞ¸ñ×Ó
+	//æ¸…é™¤æ‰€æœ‰æ ¼å­
 	$('#_grib').children().remove();
 
-	//Éú³É¸ñ×Ó
+	//ç”Ÿæˆæ ¼å­
 	for(var j=0;j<row;j++){
 		for(var i=0;i<cos;i++){
 			
@@ -107,7 +107,7 @@ _re();
 function _go(){
 	setTimeout(function(){
 
-		//Ëæ»úÑ¡Ôñ³öÏÖmouse or cat
+		//éšæœºé€‰æ‹©å‡ºç°mouse or cat
 		if(Math.random() > 0.2){
 			window.mOc[countGo] = _mouse.clone();
 		}else{
