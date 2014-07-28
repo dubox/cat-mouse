@@ -93,38 +93,53 @@ function createBlock(row,cos){
 	});
 	
 	
-var _mouse = $('<div style="width:100%;height:100%;background:red;"></div>');
-var _cat = $('<div style="width:100%;height:100%;background:green;"></div>');
+var _mouse = $('<div class="_mouse" style="width:100%;height:100%;background:red;"></div>');
+var _cat = $('<div class="_cat" style="width:100%;height:100%;background:green;"></div>');
 var countGo = 0;
-window.mOc = new Array();
+var countRe = 0;
+window['mOc'] = new Array();
 
 _go();
-_re();
+setTimeout(function(){
+//_re();
+},1000);
 function _go(){
-	setTimeout(function(){
+	var goT = setTimeout(function(){
 
 		//随机选择出现mouse or cat
-		if(Math.random() > 0.2){
-			window.mOc[countGo] = _mouse.clone();
+		if(Math.random() > 0.1){
+			window.mOc[countGo] = _mouse.clone().attr('id','_a'+countGo);
 		}else{
-			window.mOc[countGo] = _cat.clone();
+			window.mOc[countGo] = _cat.clone().attr('id','_a'+countGo);
 		}
 		$('#_grib div').eq(Math.round(Math.random()*(countBlock-1))).html(window.mOc[countGo]);
-		//alert(window.mOc.lenth);
+		
+		//setTimeout(function(){//alert(window.mOc[countGo]);
+			//window.mOc[countGo].remove();
+			//window.mOc[countGo] = '';
+		//},1000);
 		countGo++;
+		//clearTimeout(goT);
+		_re();
+		countRe++;
 		_go();
-	},500);
+	},900);
 }
 function _re(){
-	setTimeout(function(){//alert(window.mOc.shift());
-			//window.mOc.shift().remove();
-			_re();
+	setTimeout(function(){//alert(window.mOc.shift());alert(window.mOc.length);
+			var _shift = window.mOc[countRe];
+			if(_shift){
+				_shift.remove();
+				window.mOc[countRe] = '';
+			}
+			
+			//_re();
 		},1000);
 }
 
 </script>
 
-
+<span id="dd"></span>
 
 
 
