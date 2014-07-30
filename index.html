@@ -33,6 +33,15 @@ body{margin:0;padding:0;}
 </head>
 
 <body>
+
+<span id="dd">eeeeeeee</span>
+<div id="_ctrl" style="position: absolute;left:0;bottom:0;width:200px;height:500px;">
+<div id="_hummer" style="width:200px;height:250px;background:red;">
+
+</div><div id="_fish" style="width:200px;height:250px;background:green;">
+
+</div>
+</div>
 <div id="_grib"></div>
 	  
 	  
@@ -47,6 +56,7 @@ function cat_mouse(option){
 	var row = option.row;	//
 	var cos = option.cos;
 	var countBlock = row*cos;
+	var ctrl = option.ctrl;
 	this1.showTime = option.showTime;	//mouse or cat 出现的间隔时间（初始的）
 	this1.hideTime = option.hideTime;	//mouse or cat 消失的等待时间（初始的）
 	this1.catOdds = option.catOdds;	//cat 出现的概率（初始的 ,用小数表示）
@@ -55,6 +65,8 @@ function cat_mouse(option){
 	this1.catOddsV = option.catOddsV;	//cat 出现的概率的增量
 	this1.countM = 0;	//mouse的总数
 	this1.countC = 0;	//cat的总数
+	
+	this1._ctrl = false; //false _fish _hummer 当前道具
 
 	//计算网格大小
 	var _win_width,_win_height;
@@ -107,24 +119,45 @@ function cat_mouse(option){
 		
 	this1._mouse = function(){
 
-	 this._m = $('<div class="_mouse" style="width:100%;height:100%;background:red;"></div>');
-	 _grib_obj.children().eq(Math.round(Math.random()*(countBlock-1))).html(this._m);
-	 var this2 = this;
-	 setTimeout(function(){
-		this2._m.remove();
+		this._m = $('<div class="_mouse" style="width:100%;height:100%;background:red;"></div>');
+		this._m.bind('touchstart',function(){
+			//alert(this1._ctrl);
+			$('#dd').html(this1._ctrl);
+		});
+		
+		_grib_obj.children().eq(Math.round(Math.random()*(countBlock-1))).html(this._m);
+		var this2 = this;
+		setTimeout(function(){
+			this2._m.remove();
 		},this1.hideTime);
 	 
 	}
 	
 	this._cat = function(){
 	
-	 this._c = $('<div class="_cat" style="width:100%;height:100%;background:green;"></div>');
-	 _grib_obj.children().eq(Math.round(Math.random()*(countBlock-1))).html(this._c);
-	 var this2 = this;
-	 setTimeout(function(){
-		this2._c.remove();
+		this._c = $('<div class="_cat" style="width:100%;height:100%;background:green;"></div>');
+		_grib_obj.children().eq(Math.round(Math.random()*(countBlock-1))).html(this._c);
+		var this2 = this;
+		setTimeout(function(){
+			this2._c.remove();
 		},this1.hideTime);
 	 
+	}
+	
+	//监听控制按钮
+	this1.set_ctrl = function(){
+	
+		for(var i in ctrl){
+			
+			$('#'+ctrl[i]).bind('touchstart',function(){	//addEventListener
+				this1._ctrl = $(this).attr('id');
+			}).bind('touchmove',function(){	//addEventListener
+				this1._ctrl = $(this).attr('id');
+			}).bind('touchend',function(){	//addEventListener
+				this1._ctrl = false;
+			});
+		}
+	
 	}
 	
 	
@@ -153,20 +186,22 @@ function cat_mouse(option){
 	
 	
 	this1.init = function(){
-	
+		
+		//window.addEventListener('touchmove', function(e){e.preventDefault();});
 		this1.createBlock(row,cos);
 		this1._go();
-	
+		this1.set_ctrl();
+		
 	}
 
 }
 
-var cm = new cat_mouse({'id':'_grib','row':8,'cos':8,'showTime':500,'hideTime':1000,'catOdds':0.02,'showTimeV':-2,'hideTimeV':-1,'catOddsV':0.01});
+var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':8,'cos':8,'showTime':500,'hideTime':1000,'catOdds':0,'showTimeV':-0,'hideTimeV':-0,'catOddsV':0.001});
 cm.init();
 
 </script>
 
-<span id="dd"></span>
+
 
 
 
