@@ -39,16 +39,28 @@ body{margin:0;padding:0;}
 <script>
 var _win_width,_win_height;
 _win_width = $(window).width();
-	_win_height = $(window).height();
+_win_height = $(window).height();
+
+if(_win_width > _win_height){
+	$("#_grib").width(_win_height);
+	$("#_grib").height(_win_height);
 	
-	if(_win_width > _win_height){
-		$("#_grib").width(_win_height);
-		$("#_grib").height(_win_height);
-		
+}else{
+	$("#_grib").width(_win_width);
+	$("#_grib").height(_win_width);
+}
+
+
+$(window).resize(function(){
+	if($(window).width() > $(window).height()){
+		$("#_grib").width($(window).height());
+		$("#_grib").height($(window).height());
 	}else{
-		$("#_grib").width(_win_width);
-		$("#_grib").height(_win_width);
+		$("#_grib").width($(window).width());
+		$("#_grib").height($(window).width());
 	}
+	createBlock(row,cos);
+});
 	
 //网格的行数和列数
 var row = 8;	//
@@ -59,7 +71,7 @@ createBlock(row,cos);
 
 	
 
-
+//创建网格
 function createBlock(row,cos){
 	//
 	var _gribW = $('#_grib').width();	
@@ -81,16 +93,7 @@ function createBlock(row,cos){
 	}
 
 }
-	$(window).resize(function(){
-		if($(window).width() > $(window).height()){
-			$("#_grib").width($(window).height());
-			$("#_grib").height($(window).height());
-		}else{
-			$("#_grib").width($(window).width());
-			$("#_grib").height($(window).width());
-		}
-		createBlock(row,cos);
-	});
+
 	
 	
 function _mouse(){
@@ -119,7 +122,6 @@ function _cat(){
 var countM = 0;
 var countC = 0;
 
-_go();
 
 function _go(){
 	var goT = setTimeout(function(){
@@ -134,10 +136,11 @@ function _go(){
 		}
 	
 		_go();
-	},500);
+	},200);
 }
 
 
+_go();
 </script>
 
 <span id="dd"></span>
