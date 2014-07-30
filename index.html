@@ -93,49 +93,50 @@ function createBlock(row,cos){
 	});
 	
 	
-var _mouse = $('<div class="_mouse" style="width:100%;height:100%;background:red;"></div>');
-var _cat = $('<div class="_cat" style="width:100%;height:100%;background:green;"></div>');
-var countGo = 0;
-var countRe = 0;
-window['mOc'] = new Array();
+function _mouse(){
+
+
+ this._m = $('<div class="_mouse" style="width:100%;height:100%;background:red;"></div>');
+ $('#_grib div').eq(Math.round(Math.random()*(countBlock-1))).html(this._m);
+ var _this = this;
+ setTimeout(function(){
+	_this._m.remove();
+	},1000);
+ 
+}
+function _cat(){
+
+
+ this._c = $('<div class="_cat" style="width:100%;height:100%;background:green;"></div>');
+ $('#_grib div').eq(Math.round(Math.random()*(countBlock-1))).html(this._c);
+ var _this = this;
+ setTimeout(function(){
+	_this._c.remove();
+	},1000);
+ 
+}
+
+var countM = 0;
+var countC = 0;
 
 _go();
-setTimeout(function(){
-//_re();
-},1000);
+
 function _go(){
 	var goT = setTimeout(function(){
 
 		//随机选择出现mouse or cat
 		if(Math.random() > 0.1){
-			window.mOc[countGo] = _mouse.clone().attr('id','_a'+countGo);
+			new _mouse();
+			countM++;	//统计老鼠的总数
 		}else{
-			window.mOc[countGo] = _cat.clone().attr('id','_a'+countGo);
+			new _cat();
+			countC++;
 		}
-		$('#_grib div').eq(Math.round(Math.random()*(countBlock-1))).html(window.mOc[countGo]);
-		
-		//setTimeout(function(){//alert(window.mOc[countGo]);
-			//window.mOc[countGo].remove();
-			//window.mOc[countGo] = '';
-		//},1000);
-		countGo++;
-		//clearTimeout(goT);
-		_re();
-		countRe++;
+	
 		_go();
-	},900);
+	},500);
 }
-function _re(){
-	setTimeout(function(){//alert(window.mOc.shift());alert(window.mOc.length);
-			var _shift = window.mOc[countRe];
-			if(_shift){
-				_shift.remove();
-				window.mOc[countRe] = '';
-			}
-			
-			//_re();
-		},1000);
-}
+
 
 </script>
 
