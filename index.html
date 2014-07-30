@@ -37,110 +37,133 @@ body{margin:0;padding:0;}
 	  
 	  
 <script>
-var _win_width,_win_height;
-_win_width = $(window).width();
-_win_height = $(window).height();
 
-if(_win_width > _win_height){
-	$("#_grib").width(_win_height);
-	$("#_grib").height(_win_height);
+
+function cat_mouse(option){
 	
-}else{
-	$("#_grib").width(_win_width);
-	$("#_grib").height(_win_width);
-}
+	var this1 = this;
 
+	var _grib_obj = $("#"+option.id);
+	var row = option.row;	//
+	var cos = option.cos;
+	var countBlock = row*cos;
+	this1.showTime = option.showTime;	//mouse or cat 出现的间隔时间（初始的）
+	this1.hideTime = option.hideTime;	//mouse or cat 消失的等待时间（初始的）
+	this1.catOdds = option.catOdds;	//cat 出现的概率（初始的 ,用小数表示）
+	this1.showTimeV = option.showTimeV;	//mouse or cat 出现的间隔时间的增量
+	this1.hideTimeV = option.hideTimeV;	//mouse or cat 消失的等待时间的增量
+	this1.catOddsV = option.catOddsV;	//cat 出现的概率的增量
+	this1.countM = 0;	//mouse的总数
+	this1.countC = 0;	//cat的总数
 
-$(window).resize(function(){
-	if($(window).width() > $(window).height()){
-		$("#_grib").width($(window).height());
-		$("#_grib").height($(window).height());
+	//计算网格大小
+	var _win_width,_win_height;
+	_win_width = $(window).width();
+	_win_height = $(window).height();
+
+	if(_win_width > _win_height){
+		_grib_obj.width(_win_height);
+		_grib_obj.height(_win_height);
+		
 	}else{
-		$("#_grib").width($(window).width());
-		$("#_grib").height($(window).width());
+		_grib_obj.width(_win_width);
+		_grib_obj.height(_win_width);
 	}
-	createBlock(row,cos);
-});
 	
-//网格的行数和列数
-var row = 8;	//
-var cos = 8;
-var countBlock = row*cos;
-createBlock(row,cos);
-
-
-	
-
-//创建网格
-function createBlock(row,cos){
-	//
-	var _gribW = $('#_grib').width();	
-	var _gribH = $('#_grib').height();
-
-	//格子的尺寸 亦作为格子（#_grib div）的大小
-	var BlockW = _gribW/cos;
-	var BlockH = _gribH/row;
-
-	//清除所有格子
-	$('#_grib').children().remove();
-
-	//生成格子
-	for(var j=0;j<row;j++){
-		for(var i=0;i<cos;i++){
-			
-			$('#_grib').append('<div style="top:'+j*BlockH+'px;left:'+i*BlockW+'px;width:'+BlockW+'px;height:'+BlockH+'px;"></div>');
-		}
-	}
-
-}
-
-	
-	
-function _mouse(){
-
-
- this._m = $('<div class="_mouse" style="width:100%;height:100%;background:red;"></div>');
- $('#_grib div').eq(Math.round(Math.random()*(countBlock-1))).html(this._m);
- var _this = this;
- setTimeout(function(){
-	_this._m.remove();
-	},1000);
- 
-}
-function _cat(){
-
-
- this._c = $('<div class="_cat" style="width:100%;height:100%;background:green;"></div>');
- $('#_grib div').eq(Math.round(Math.random()*(countBlock-1))).html(this._c);
- var _this = this;
- setTimeout(function(){
-	_this._c.remove();
-	},1000);
- 
-}
-
-var countM = 0;
-var countC = 0;
-
-
-function _go(){
-	var goT = setTimeout(function(){
-
-		//随机选择出现mouse or cat
-		if(Math.random() > 0.1){
-			new _mouse();
-			countM++;	//统计老鼠的总数
+	//resize时重置网格大小
+	$(window).resize(function(){
+		if($(window).width() > $(window).height()){
+			_grib_obj.width($(window).height());
+			_grib_obj.height($(window).height());
 		}else{
-			new _cat();
-			countC++;
+			_grib_obj.width($(window).width());
+			_grib_obj.height($(window).width());
 		}
+		this1.createBlock(row,cos);
+	});
 	
-		_go();
-	},200);
+	//创建网格
+	this1.createBlock = function (row,cos){
+		//
+		var _gribW = _grib_obj.width();	
+		var _gribH = _grib_obj.height();
+
+		//格子的尺寸 亦作为格子的大小
+		var BlockW = _gribW/cos;
+		var BlockH = _gribH/row;
+
+		//清除所有格子
+		_grib_obj.children().remove();
+
+		//生成格子
+		for(var j=0;j<row;j++){
+			for(var i=0;i<cos;i++){
+				
+				_grib_obj.append('<div style="top:'+j*BlockH+'px;left:'+i*BlockW+'px;width:'+BlockW+'px;height:'+BlockH+'px;"></div>');
+			}
+		}
+
+	}
+		
+	this1._mouse = function(){
+
+	 this._m = $('<div class="_mouse" style="width:100%;height:100%;background:red;"></div>');
+	 _grib_obj.children().eq(Math.round(Math.random()*(countBlock-1))).html(this._m);
+	 var this2 = this;
+	 setTimeout(function(){
+		this2._m.remove();
+		},this1.hideTime);
+	 
+	}
+	
+	this._cat = function(){
+	
+	 this._c = $('<div class="_cat" style="width:100%;height:100%;background:green;"></div>');
+	 _grib_obj.children().eq(Math.round(Math.random()*(countBlock-1))).html(this._c);
+	 var this2 = this;
+	 setTimeout(function(){
+		this2._c.remove();
+		},this1.hideTime);
+	 
+	}
+	
+	
+	//定时出现 mouse and cat
+	this1._go = function(){
+		var goT = setTimeout(function(){
+
+			//随机选择出现mouse or cat
+			if(Math.random() > this1.catOdds){
+				new this1._mouse();
+				this1.countM++;	//统计老鼠的总数
+			}else{
+				new this1._cat();
+				this1.countC++;
+			}
+			
+			//修改增量
+			this1.showTime += this1.showTimeV;
+			this1.hideTime += this1.hideTimeV;
+			this1.catOdds += this1.catOddsV;
+		
+			this1._go();
+		},this1.showTime);
+	}
+	
+	
+	
+	this1.init = function(){
+	
+		this1.createBlock(row,cos);
+		this1._go();
+	
+	}
+
 }
 
+var cm = new cat_mouse({'id':'_grib','row':8,'cos':8,'showTime':500,'hideTime':1000,'catOdds':0.02,'showTimeV':-2,'hideTimeV':-1,'catOddsV':0.01});
+cm.init();
 
-_go();
 </script>
 
 <span id="dd"></span>
