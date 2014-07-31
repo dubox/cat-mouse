@@ -8,7 +8,7 @@
 <!-- 可选的Bootstrap主题文件（一般不用引入） -->
 <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 <style>
-body{margin:0;padding:0;}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}
 *{-webkit-user-select:none;-moz-user-select:none;user-select:none;-o-user-select:none;-ms-user-select:none;}
 #_grib {position: absolute;right:0;height:340px;border:solid 0px #000;background-color: #eee;}
 
@@ -32,16 +32,18 @@ body{margin:0;padding:0;}
 
 </head>
 
-<body>
+<body >
+<div id="_dashboard" style="position: absolute;left:0;top:0;height:20px;width:100px;">
+<span id="_score" style="color:red;">0</span>
+<span id="_lost" style="color:green;">0</span>
+<span id="_totel" style="color:#000;">0</span>
+</div>
 
-<span id="dd">eeeeeeee</span>
 <div id="_ctrl" style="position: absolute;left:0;bottom:0;width:200px;height:500px;">
-<div id="_hummer" style="width:200px;height:250px;background:red;">
-
-</div><div id="_fish" style="width:200px;height:250px;background:green;">
-
+	<div id="_hummer" style="width:200px;height:250px;background:red;"></div>
+	<div id="_fish" style="width:200px;height:250px;background:green;"></div>
 </div>
-</div>
+
 <div id="_grib"></div>
 	  
 	  
@@ -65,6 +67,7 @@ function cat_mouse(option){
 	this1.catOddsV = option.catOddsV;	//cat 出现的概率的增量
 	this1.countM = 0;	//mouse的总数
 	this1.countC = 0;	//cat的总数
+	this1.score = 0;	//打到mouse的数量
 	
 	this1._ctrl = false; //false _fish _hummer 当前道具
 
@@ -118,17 +121,30 @@ function cat_mouse(option){
 	}
 		
 	this1._mouse = function(){
-
-		this._m = $('<div class="_mouse" style="width:100%;height:100%;background:red;"></div>');
-		this._m.bind('touchstart',function(){
-			//alert(this1._ctrl);
-			$('#dd').html(this1._ctrl);
+		var this2 = this;
+		this2._m = $('<div class="_mouse" style="width:100%;height:100%;background:red;"></div>');
+		this2._m.bind('touchstart',function(){
+			
+			if(this1._ctrl == '_hummer'){	//当前道具为_hummer 即打中
+				this1.score++;	//得分加1
+				this2._m.remove();	//隐藏当前_mouse
+				//this2._m = false;
+				//clearTimeout(this._hide);
+				$('#_score').html(this1.score);	//更新得分
+			}
+			
 		});
 		
-		_grib_obj.children().eq(Math.round(Math.random()*(countBlock-1))).html(this._m);
-		var this2 = this;
-		setTimeout(function(){
-			this2._m.remove();
+		_grib_obj.children().eq(Math.round(Math.random()*(countBlock-1))).html(this2._m);
+		
+		this2._hide = setTimeout(function(){
+			if(this2._m){	//没打到 则更新hide等待时间
+				this1.hideTime += this1.hideTimeV;
+				this2._m.remove();
+				//this2._m = false;
+				$('#_lost').html(parseInt($('#_lost').html())+1);
+			}
+			
 		},this1.hideTime);
 	 
 	}
@@ -136,6 +152,18 @@ function cat_mouse(option){
 	this._cat = function(){
 	
 		this._c = $('<div class="_cat" style="width:100%;height:100%;background:green;"></div>');
+		this._c.bind('touchstart',function(){
+			
+			if(this1._ctrl == '_fish'){	//当前道具为 _fish 
+				this1.score += $('._mouse').size();	//得分加上当前mouse的数量
+				
+				//this1.catOdds += this1.catOddsV;
+				//this2._m.remove();	//隐藏当前_mouse
+				//this2._m = false;
+				
+			}
+			
+		});
 		_grib_obj.children().eq(Math.round(Math.random()*(countBlock-1))).html(this._c);
 		var this2 = this;
 		setTimeout(function(){
@@ -176,8 +204,8 @@ function cat_mouse(option){
 			
 			//修改增量
 			this1.showTime += this1.showTimeV;
-			this1.hideTime += this1.hideTimeV;
-			this1.catOdds += this1.catOddsV;
+			//
+			
 		
 			this1._go();
 		},this1.showTime);
@@ -187,7 +215,7 @@ function cat_mouse(option){
 	
 	this1.init = function(){
 		
-		//window.addEventListener('touchmove', function(e){e.preventDefault();});
+		window.addEventListener('touchmove', function(e){e.preventDefault();});
 		this1.createBlock(row,cos);
 		this1._go();
 		this1.set_ctrl();
@@ -196,7 +224,7 @@ function cat_mouse(option){
 
 }
 
-var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':8,'cos':8,'showTime':500,'hideTime':1000,'catOdds':0,'showTimeV':-0,'hideTimeV':-0,'catOddsV':0.001});
+var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':8,'cos':8,'showTime':500,'hideTime':2000,'catOdds':0,'showTimeV':-0.1,'hideTimeV':-0,'catOddsV':0.001});
 cm.init();
 
 </script>
