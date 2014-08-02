@@ -38,11 +38,19 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}
 <span id="_lost" style="color:green;">0</span>
 <span id="_totel" style="color:#000;">0</span>
 </div>
-
+<!--  横屏模式
 <div id="_ctrl" style="position: absolute;left:0;bottom:0;width:200px;height:500px;">
 	<div id="_hummer" style="width:200px;height:250px;background:red;"></div>
 	<div id="_fish" style="width:200px;height:250px;background:green;"></div>
 </div>
+-->
+
+<!-- 竖屏模式 -->
+<div id="_ctrl" style="position: absolute;left:0;bottom:0;width:100%;">
+	<div id="_hummer" style="float:left;width:50%;height:100%;background:red;"></div>
+	<div id="_fish" style="float:left;width:50%;height:100%;background:green;"></div>
+</div>
+
 
 <div id="_grib"></div>
 	  
@@ -126,11 +134,12 @@ function cat_mouse(option){
 		this2._m.bind('touchstart',function(){
 			
 			if(this1._ctrl == '_hummer'){	//当前道具为_hummer 即打中
-				this1.score++;	//得分加1
+				
 				this2._m.remove();	//隐藏当前_mouse
-				//this2._m = false;
-				//clearTimeout(this._hide);
-				$('#_score').html(this1.score);	//更新得分
+				this2._m = false;
+				
+				this1.score++;	//得分加1
+				$('#_score').html(this1.score);	//更新得分显示 
 			}
 			
 		});
@@ -138,10 +147,11 @@ function cat_mouse(option){
 		_grib_obj.children().eq(Math.round(Math.random()*(countBlock-1))).html(this2._m);
 		
 		this2._hide = setTimeout(function(){
+			
 			if(this2._m){	//没打到 则更新hide等待时间
 				this1.hideTime += this1.hideTimeV;
 				this2._m.remove();
-				//this2._m = false;
+				this2._m = false;
 				$('#_lost').html(parseInt($('#_lost').html())+1);
 			}
 			
@@ -149,25 +159,42 @@ function cat_mouse(option){
 	 
 	}
 	
+	this.hummered = function(){
+		this1.score++;	//得分加1
+		$('#_score').html(this1.score);	//更新得分显示 
+	}
+	
+	
 	this._cat = function(){
 	
 		this._c = $('<div class="_cat" style="width:100%;height:100%;background:green;"></div>');
 		this._c.bind('touchstart',function(){
 			
 			if(this1._ctrl == '_fish'){	//当前道具为 _fish 
+				
 				this1.score += $('._mouse').size();	//得分加上当前mouse的数量
+				$('._mouse').remove();	//消灭当前所有 mouse
+				this1.catOdds += this1.catOddsV; //更新 catOdds （增加）
 				
-				//this1.catOdds += this1.catOddsV;
-				//this2._m.remove();	//隐藏当前_mouse
-				//this2._m = false;
+				//补偿隐藏等待时间（因为这里不能将 this2._m = false;）
+				this1.hideTime -= this1.hideTimeV*$('._mouse').size(); 
+				this2._c.remove();
+				this2._c = false;
+			}else{	//用错道具
 				
+				this1.catOdds -= this1.catOddsV; //更新 catOdds （减少）
+				this2._c.remove();
+				this2._c = false;
 			}
 			
 		});
 		_grib_obj.children().eq(Math.round(Math.random()*(countBlock-1))).html(this._c);
 		var this2 = this;
 		setTimeout(function(){
-			this2._c.remove();
+			if(this2._c){
+				this2._c.remove();
+				this2._c = false;
+			}
 		},this1.hideTime);
 	 
 	}
@@ -193,20 +220,18 @@ function cat_mouse(option){
 	this1._go = function(){
 		var goT = setTimeout(function(){
 
-			//随机选择出现mouse or cat
+			//随机选择出现 mouse or cat
 			if(Math.random() > this1.catOdds){
 				new this1._mouse();
-				this1.countM++;	//统计老鼠的总数
+				this1.countM++;	//统计mouse的总数
 			}else{
 				new this1._cat();
 				this1.countC++;
 			}
 			
-			//修改增量
+			//更新 showTime
 			this1.showTime += this1.showTimeV;
-			//
 			
-		
 			this1._go();
 		},this1.showTime);
 	}
@@ -224,8 +249,17 @@ function cat_mouse(option){
 
 }
 
-var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':8,'cos':8,'showTime':500,'hideTime':2000,'catOdds':0,'showTimeV':-0.1,'hideTimeV':-0,'catOddsV':0.001});
+var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':6,'cos':6,'showTime':500,'hideTime':2000,'catOdds':0.1,'showTimeV':-0.1,'hideTimeV':-0.1,'catOddsV':0.001});
 cm.init();
+
+
+$(function(){
+	
+	//竖屏模式
+	$('#_ctrl').height($(window).height() - $(window).width());
+
+});
+
 
 </script>
 
