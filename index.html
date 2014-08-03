@@ -232,11 +232,14 @@ function cat_mouse(option){
 		},this1.showTime);
 	}
 	
-	this1.gameover = function(){
+	this1.gameover = function(callback){
 	
 		if(this1.countM - this1.score >= row*cos){
-			alert('Game Over!');
+			
 			this1._go = function(){};
+			$('._mouse').remove();
+			$('._cat').remove();
+			_alert('Game Over','<h3>您消灭了'+this1.score+'只Jerry，点击右上角菜单将战绩分享到朋友圈...</h3><h1>再玩一次？</h1>',game_start,function(){});
 		}
 	
 	}
@@ -252,6 +255,8 @@ function cat_mouse(option){
 
 }
 var game_start = function (){
+	
+	$('#_score').html('0');
 	var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':4,'cos':4,'showTime':500,'hideTime':2000,'catOdds':0.1,'showTimeV':-0.2,'hideTimeV':-0.1,'catOddsV':0.002,'_catHtml':'<div style="width:100%;height:100%;background:green;"></div>','_mouseHtml':'<div  style="width:100%;height:100%;background:red;"></div>'});
 	cm.init();
 }
@@ -272,7 +277,7 @@ $(function(){
 	
 });
 
-_alert('Tom and Jerry','<h1>玩法：</h1><p>用锤子打Jerry，用鱼喂Tom。<br/>就这么简单！</p>',game_start);
+_alert('Tom and Jerry','<h1>玩法：</h1><h3>用锤子打Jerry，用鱼喂Tom。<br/>就这么简单！</h3>',game_start);
 function _alert(title,msg,fn_yes,fn_no){
 
 	
@@ -299,14 +304,14 @@ function _alert(title,msg,fn_yes,fn_no){
 	this._dialogObj = $(_dialog);
 	
 	var this1 = this;
-	this1._dialogObj.find('#_ok').bind('touchstart',function(){
+	this1._dialogObj.find('#_ok').bind('touchend',function(){
 		if(fn_yes){
 			fn_yes();
 		}
 		this1._dialogObj.remove();
 	});
 	if(fn_no){
-		this1._dialogObj.find('#_cancel').bind('touchstart',function(){
+		this1._dialogObj.find('#_cancel').bind('touchend',function(){
 			
 				fn_no();
 			
