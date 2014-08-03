@@ -1,38 +1,28 @@
 <!DOCTYPE html>
 <html><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- 新 Bootstrap 核心 CSS 文件 -->
-<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1,target-densitydpi=device-dpi,user-scalable=no"/>
 
-<!-- 可选的Bootstrap主题文件（一般不用引入） -->
-<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 <style>
 html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}
 *{-webkit-user-select:none;-moz-user-select:none;user-select:none;-o-user-select:none;-ms-user-select:none;}
 #_grib {position: absolute;right:0;height:340px;border:solid 0px #000;}
 
 #_grib div{position:absolute;border:solid 0px #000;}
-[class*="col-"] {
-  padding-top: 15px;
-  padding-bottom: 15px;
-  background-color: #eee;
-  background-color: rgba(86,61,124,.15);
-  border: 0px solid #ddd;
-  border: 0px solid rgba(86,61,124,.2);
-}
-</style>
-<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</style>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.css" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js1"></script>
 
 
 
 </head>
 
 <body >
+
+
+
 
 <!--  横屏模式
 <div id="_ctrl" style="position: absolute;left:0;bottom:0;width:200px;height:500px;">
@@ -49,7 +39,10 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}
 
 
 <div id="_grib"></div>
-	  
+
+
+
+
 	  
 <script>
 
@@ -243,7 +236,7 @@ function cat_mouse(option){
 	
 		if(this1.countM - this1.score >= row*cos){
 			alert('Game Over!');
-			this1._go = false;
+			this1._go = function(){};
 		}
 	
 	}
@@ -258,9 +251,11 @@ function cat_mouse(option){
 	}
 
 }
+var game_start = function (){
+	var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':4,'cos':4,'showTime':500,'hideTime':2000,'catOdds':0.1,'showTimeV':-0.2,'hideTimeV':-0.1,'catOddsV':0.002,'_catHtml':'<div style="width:100%;height:100%;background:green;"></div>','_mouseHtml':'<div  style="width:100%;height:100%;background:red;"></div>'});
+	cm.init();
+}
 
-var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':4,'cos':4,'showTime':500,'hideTime':2000,'catOdds':0.1,'showTimeV':-0.2,'hideTimeV':-0.1,'catOddsV':0.002,'_catHtml':'<div style="width:100%;height:100%;background:green;"></div>','_mouseHtml':'<div  style="width:100%;height:100%;background:red;"></div>'});
-cm.init();
 
 
 $(function(){
@@ -270,13 +265,62 @@ $(function(){
 	
 	
 	//插入记分牌
-	$('body').prepend('<div id="_score" style="position: absolute;left:0;top:0;text-align:center;color:#aaa;font-size:200px;width:100%;">0</div>');
+	$('#_ctrl').before('<div id="_score" style="position: absolute;left:0;top:0;text-align:center;color:#aaa;font-size:200px;width:100%;"></div>');
 	$('#_score').height($(window).width());
+	
+	
+	
 });
 
+_alert('Tom and Jerry','<h1>玩法：</h1><p>用锤子打Jerry，用鱼喂Tom。<br/>就这么简单！</p>',game_start);
+function _alert(title,msg,fn_yes,fn_no){
+
+	
+	
+	var _dialog = '<div role="dialog" class="ui-dialog-contain ui-overlay-shadow ui-corner-all">'
+
+			+'<div data-role="header" data-theme="b" role="banner" class="ui-header ui-bar-b"><a href="#" class="ui-corner-all ui-btn-icon-notext ui-btn-left" data-rel="back"></a>'
+			+'<h1 class="ui-title" role="heading" aria-level="1">'+title+'</h1>'
+			+'</div>'
+
+			+'<div role="main" class="ui-content">'
+			
+			+msg
+			
+			
+			+'	<a id="_ok"  class="ui-btn ui-shadow ui-corner-all ui-btn-a">OK</a>';
+			if(fn_no){
+				_dialog += '	<a id="_cancel"  class="ui-btn ui-shadow ui-corner-all ui-btn-a">Cancel</a>';
+			}
+			_dialog += '</div>';
+	_dialog += '</div>';
+	
+	
+	this._dialogObj = $(_dialog);
+	
+	var this1 = this;
+	this1._dialogObj.find('#_ok').bind('touchstart',function(){
+		if(fn_yes){
+			fn_yes();
+		}
+		this1._dialogObj.remove();
+	});
+	if(fn_no){
+		this1._dialogObj.find('#_cancel').bind('touchstart',function(){
+			
+				fn_no();
+			
+			this1._dialogObj.remove();
+		});
+	}
+	
+	$('body').append(this1._dialogObj);
+	
+	
+	
+}
 
 </script>
-
 
 
 
