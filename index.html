@@ -4,12 +4,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1,target-densitydpi=device-dpi,user-scalable=no"/>
 
 <style>
+@font-face {
+    font-family: 'duboxregular';
+    src: url('fonts/dubox.eot');
+    src: url('fonts/dubox.eot?#iefix') format('embedded-opentype'),
+         url('fonts/dubox.woff') format('woff'),
+         url('fonts/dubox.ttf') format('truetype'),
+         url('fonts/dubox.svg#duboxregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
 html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}
 *{-webkit-user-select:none;-moz-user-select:none;user-select:none;-o-user-select:none;-ms-user-select:none;}
-#_grib {position: absolute;right:0;height:340px;border:solid 0px #000;}
+#_grib {position: absolute;right:0;height:340px;border:solid 0px #000;font-family: 'duboxregular';}
 
 #_grib div{position:absolute;border:solid 0px #000;}
 
+div{padding:0;text-align:center;}
 </style>
 <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.css" />
 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -35,6 +47,7 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}
 <div id="_ctrl" style="position: absolute;left:0;bottom:0;width:100%;">
 	<div id="_hummer" style="float:left;width:50%;height:100%;background:red;"></div>
 	<div id="_fish" style="float:left;width:50%;height:100%;background:green;"></div>
+	
 </div>
 
 
@@ -103,7 +116,7 @@ function cat_mouse(option){
 		var _gribH = _grib_obj.height();
 
 		//格子的尺寸 亦作为格子的大小
-		var BlockW = _gribW/cos;
+		var BlockW = this1.BlockW = _gribW/cos;
 		var BlockH = _gribH/row;
 
 		//清除所有格子
@@ -257,8 +270,9 @@ function cat_mouse(option){
 var game_start = function (){
 	
 	$('#_score').html('0');
-	var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':4,'cos':4,'showTime':500,'hideTime':2000,'catOdds':0.1,'showTimeV':-0.2,'hideTimeV':-0.1,'catOddsV':0.002,'_catHtml':'<div style="width:100%;height:100%;background:green;"></div>','_mouseHtml':'<div  style="width:100%;height:100%;background:red;"></div>'});
+	var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':4,'cos':4,'showTime':500,'hideTime':2000,'catOdds':0.1,'showTimeV':-0.2,'hideTimeV':-0.1,'catOddsV':0.002,'_catHtml':'<div style="width:100%;height:100%;">&#57796;</div>','_mouseHtml':'<div  style="width:100%;height:100%;">&#57797;</div>'});
 	cm.init();
+	$('#_grib').css('font-size',cm.BlockW+'px');
 }
 
 
