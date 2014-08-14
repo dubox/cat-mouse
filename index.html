@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html><head>
 <meta charset="utf-8"/>
+<title>Tom and Jerry</title>
 <meta name="viewport" content="width=device-width, initial-scale=1,target-densitydpi=device-dpi,user-scalable=no"/>
 
 <style>
@@ -15,7 +16,8 @@
     font-style: normal;
 
 }
-html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}
+html{background:#999;}
+html,body{margin:0 auto;padding:0;width:100%;height:100px;overflow:hidden;}
 *{-webkit-user-select:none;-moz-user-select:none;user-select:none;-o-user-select:none;-ms-user-select:none;}
 #_grib {position: absolute;right:0;height:340px;border:solid 0px #000;font-family: 'duboxregular';}
 
@@ -31,7 +33,7 @@ div{padding:0;text-align:center;}
 
 </head>
 
-<body >
+<body style="position: relative;background:#e9e9e9;display:block;">
 
 
 
@@ -44,9 +46,9 @@ div{padding:0;text-align:center;}
 -->
 
 <!-- 竖屏模式 -->
-<div id="_ctrl" style="position: absolute;left:0;bottom:0;width:100%;">
-	<div id="_hummer" style="float:left;width:50%;height:100%;background:red;"></div>
-	<div id="_fish" style="float:left;width:50%;height:100%;background:green;"></div>
+<div id="_ctrl" style="position: absolute;left:0;bottom:0;width:100%;font-family: 'duboxregular';">
+	<div id="_hummer" style="float:left;width:50%;height:100%;text-align:center;">&#57798;</div>
+	<div id="_fish" style="float:left;width:50%;height:100%;text-align:center;">&#57799;</div>
 	
 </div>
 
@@ -58,6 +60,16 @@ div{padding:0;text-align:center;}
 
 	  
 <script>
+
+if($(window).height()<$(window).width()){
+	$('body').height($(window).height());
+	$('body').width($(window).height()*9/16);
+}else{
+	$('body').height($(window).height());
+	$('body').width($(window).width());
+
+}
+
 
 
 function cat_mouse(option){
@@ -85,8 +97,8 @@ function cat_mouse(option){
 
 	//计算网格大小
 	var _win_width,_win_height;
-	_win_width = $(window).width();
-	_win_height = $(window).height();
+	_win_width = $('body').width();
+	_win_height = $('body').height();
 
 	if(_win_width > _win_height){
 		_grib_obj.width(_win_height);
@@ -97,17 +109,7 @@ function cat_mouse(option){
 		_grib_obj.height(_win_width);
 	}
 	
-	//resize时重置网格大小
-	$(window).resize(function(){
-		if($(window).width() > $(window).height()){
-			_grib_obj.width($(window).height());
-			_grib_obj.height($(window).height());
-		}else{
-			_grib_obj.width($(window).width());
-			_grib_obj.height($(window).width());
-		}
-		this1.createBlock(row,cos);
-	});
+	
 	
 	//创建网格
 	this1.createBlock = function (row,cos){
@@ -211,11 +213,14 @@ function cat_mouse(option){
 	
 		for(var i in ctrl){
 			
-			$('#'+ctrl[i]).bind('touchstart',function(){	//addEventListener
+			$('#'+ctrl[i]).bind('touchstart',function(e){	//addEventListener
+				e.preventDefault();
 				this1._ctrl = $(this).attr('id');
-			}).bind('touchmove',function(){	//addEventListener
+			}).bind('touchmove',function(e){	//addEventListener
+				e.preventDefault();
 				this1._ctrl = $(this).attr('id');
-			}).bind('touchend',function(){	//addEventListener
+			}).bind('touchend',function(e){	//addEventListener
+				e.preventDefault();
 				this1._ctrl = false;
 			});
 		}
@@ -279,13 +284,25 @@ var game_start = function (){
 
 $(function(){
 	
-	//竖屏模式
-	$('#_ctrl').height($(window).height() - $(window).width());
-	
+	// 控制区
+	if($('body').width()/2 < ($('body').height() - $('body').width())){
+		$('#_ctrl').height($('body').width()/2);
+		$('#_ctrl').css('font-size',$('body').width()/2+'px');
+	}else{
+		$('#_ctrl').height(($('body').height() - $('body').width()));
+		$('#_ctrl').css('font-size',($('body').height() - $('body').width())+'px');
+	}
+	$('#_hummer,#_fish').bind('touchstart',function(e){	//addEventListener
+				e.preventDefault();
+				$(this).css('background','green');
+			}).bind('touchend',function(e){	//addEventListener
+				e.preventDefault();
+				$(this).css('background','');
+			});
 	
 	//插入记分牌
 	$('#_ctrl').before('<div id="_score" style="position: absolute;left:0;top:0;text-align:center;color:#aaa;font-size:200px;width:100%;"></div>');
-	$('#_score').height($(window).width());
+	$('#_score').height($('body').width());
 	
 	
 	
