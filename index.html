@@ -29,13 +29,19 @@ div{padding:0;text-align:center;}
 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js1"></script>
 
-
+<script src="js/WeixinApi.js"></script>
 
 </head>
 
 <body style="position: relative;background:#e9e9e9;display:block;">
 
-
+<script type="text/javascript">
+  (Easouunion = window.Easouunion || {}).config = {
+      publisher:'8297_659', 
+      style:2
+  };
+</script>
+<script type="text/javascript" src="http://assets.easou.com/union/easou-union.js"></script>
 
 
 <!--  横屏模式
@@ -44,7 +50,7 @@ div{padding:0;text-align:center;}
 	<div id="_fish" style="width:200px;height:250px;background:green;"></div>
 </div>
 -->
-
+<div id="game_area" style="width:100%;position: absolute;left:0;bottom:0;">
 <!-- 竖屏模式 -->
 <div id="_ctrl" style="position: absolute;left:0;bottom:0;width:100%;font-family: 'duboxregular';">
 	<div id="_hummer" style="float:left;width:50%;height:100%;text-align:center;">&#57798;</div>
@@ -54,7 +60,7 @@ div{padding:0;text-align:center;}
 
 
 <div id="_grib"></div>
-
+</div>
 
 
 
@@ -70,7 +76,10 @@ if($(window).height()<$(window).width()){
 
 }
 
+$('#game_area').height($('body').height()-50);
 
+var game_w = $('#game_area').width();
+var game_h = $('#game_area').height();
 
 function cat_mouse(option){
 	
@@ -97,8 +106,8 @@ function cat_mouse(option){
 
 	//计算网格大小
 	var _win_width,_win_height;
-	_win_width = $('body').width();
-	_win_height = $('body').height();
+	_win_width = game_w;
+	_win_height = game_h;
 
 	if(_win_width > _win_height){
 		_grib_obj.width(_win_height);
@@ -185,7 +194,7 @@ function cat_mouse(option){
 				this1.catOdds += this1.catOddsV; //更新 catOdds （增加）
 				
 				//补偿隐藏等待时间（因为这里不能将 this2._m = false;）
-				this1.hideTime -= this1.hideTimeV*now_mouse_num; 
+				this1.hideTime -= (this1.hideTimeV*now_mouse_num); 
 				this2._c.remove();
 				this2._c = false;
 				$('#_score').html(this1.score);	//更新得分显示 
@@ -213,14 +222,16 @@ function cat_mouse(option){
 	
 		for(var i in ctrl){
 			
-			$('#'+ctrl[i]).bind('touchstart',function(e){	//addEventListener
-				e.preventDefault();
+			$('#'+ctrl[i])[0].addEventListener('touchstart',function(e){	//addEventListener
+				
 				this1._ctrl = $(this).attr('id');
-			}).bind('touchmove',function(e){	//addEventListener
-				e.preventDefault();
+			});
+			$('#'+ctrl[i])[0].addEventListener('touchmove',function(e){	//addEventListener
+				
 				this1._ctrl = $(this).attr('id');
-			}).bind('touchend',function(e){	//addEventListener
-				e.preventDefault();
+			});
+			$('#'+ctrl[i])[0].addEventListener('touchend',function(e){	//addEventListener
+				
 				this1._ctrl = false;
 			});
 		}
@@ -252,19 +263,27 @@ function cat_mouse(option){
 	
 	this1.gameover = function(callback){
 	
-		if(this1.countM - this1.score >= row*cos){
+		if(this1.countM - this1.score >= row*cos*2){
 			
 			this1._go = function(){};
 			$('._mouse').remove();
 			$('._cat').remove();
-			_alert('Game Over','<h3>您消灭了'+this1.score+'只Jerry，点击右上角菜单将战绩分享到朋友圈...</h3><h1>再玩一次？</h1>',game_start,function(){});
+			
+			$('#au_end')[0].play();
+			setTimeout(function(){
+				share(this1.score);
+				_alert({title:'Game Over',ok:'再玩一次'},'<h2>哈哈！您消灭了'+this1.score+'只Jerry，点击右上角菜单将战绩分享到朋友圈...</h2>',game_start);
+			},6000);
+			
 		}
 	
 	}
 	
 	this1.init = function(){
 		
+		window.addEventListener('touchstart', function(e){e.preventDefault();});
 		window.addEventListener('touchmove', function(e){e.preventDefault();});
+		window.addEventListener('touchend', function(e){e.preventDefault();});
 		this1.createBlock(row,cos);
 		this1._go();
 		this1.set_ctrl();
@@ -275,9 +294,11 @@ function cat_mouse(option){
 var game_start = function (){
 	
 	$('#_score').html('0');
-	var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':4,'cos':4,'showTime':500,'hideTime':2000,'catOdds':0.1,'showTimeV':-0.2,'hideTimeV':-0.1,'catOddsV':0.002,'_catHtml':'<div style="width:100%;height:100%;">&#57796;</div>','_mouseHtml':'<div  style="width:100%;height:100%;">&#57797;</div>'});
+	var cm = new cat_mouse({'id':'_grib','ctrl':['_fish','_hummer'],'row':4,'cos':4,'showTime':500,'hideTime':2000,'catOdds':0.1,'showTimeV':-5,'hideTimeV':-0.1,'catOddsV':0.02,'_catHtml':'<div style="width:100%;height:100%;">&#57796;</div>','_mouseHtml':'<div  style="width:100%;height:100%;">&#57797;</div>'});
 	cm.init();
 	$('#_grib').css('font-size',cm.BlockW+'px');
+	
+	$('#au_start')[0].pause();
 }
 
 
@@ -285,13 +306,14 @@ var game_start = function (){
 $(function(){
 	
 	// 控制区
-	if($('body').width()/2 < ($('body').height() - $('body').width())){
-		$('#_ctrl').height($('body').width()/2);
-		$('#_ctrl').css('font-size',$('body').width()/2+'px');
+	if(game_w/2 < (game_h - game_w)){
+		$('#_ctrl').height(game_w/2);
+		$('#_ctrl').css('font-size',game_w/2+'px');
 	}else{
-		$('#_ctrl').height(($('body').height() - $('body').width()));
-		$('#_ctrl').css('font-size',($('body').height() - $('body').width())+'px');
+		$('#_ctrl').height((game_h - game_w));
+		$('#_ctrl').css('font-size',(game_h - game_w)+'px');
 	}
+	/*
 	$('#_hummer,#_fish').bind('touchstart',function(e){	//addEventListener
 				e.preventDefault();
 				$(this).css('background','green');
@@ -299,34 +321,38 @@ $(function(){
 				e.preventDefault();
 				$(this).css('background','');
 			});
-	
+	*/
 	//插入记分牌
-	$('#_ctrl').before('<div id="_score" style="position: absolute;left:0;top:0;text-align:center;color:#aaa;font-size:200px;width:100%;"></div>');
-	$('#_score').height($('body').width());
+	$('#_ctrl').before('<div id="_score" style="position: absolute;left:0;text-align:center;color:#aaa;font-size:200px;width:100%;"></div>');
+	$('#_score').height(game_w);
 	
-	
+	//音效
+	$('#_grib').bind('touchstart',function(){
+		
+		//$('#au_single'+Math.floor(Math.random()*(8)+1))[0].play();
+	});
 	
 });
 
-_alert('Tom and Jerry','<h1>玩法：</h1><h3>用锤子打Jerry，用鱼喂Tom。<br/>就这么简单！</h3>',game_start);
-function _alert(title,msg,fn_yes,fn_no){
+_alert({title:'Tom and Jerry',ok:'开始'},'<h1>玩法：</h1><h3>用锤子打Jerry，用鱼喂Tom。<br/>就这么简单！</h3>',game_start);
+function _alert(opt,msg,fn_yes,fn_no){
 
 	
 	
 	var _dialog = '<div role="dialog" class="ui-dialog-contain ui-overlay-shadow ui-corner-all">'
 
 			+'<div data-role="header" data-theme="b" role="banner" class="ui-header ui-bar-b"><a href="#" class="ui-corner-all ui-btn-icon-notext ui-btn-left" data-rel="back"></a>'
-			+'<h1 class="ui-title" role="heading" aria-level="1">'+title+'</h1>'
+			+'<h1 class="ui-title" role="heading" aria-level="1">'+opt.title+'</h1>'
 			+'</div>'
 
-			+'<div role="main" class="ui-content">'
+			+'<div role="main" class="ui-content" style="background:#fff;">'
 			
 			+msg
 			
 			
-			+'	<a id="_ok"  class="ui-btn ui-shadow ui-corner-all ui-btn-a">OK</a>';
+			+'	<a id="_ok"  class="ui-btn ui-shadow ui-corner-all ui-btn-a">'+opt.ok+'</a>';
 			if(fn_no){
-				_dialog += '	<a id="_cancel"  class="ui-btn ui-shadow ui-corner-all ui-btn-a">Cancel</a>';
+				_dialog += '	<a id="_cancel"  class="ui-btn ui-shadow ui-corner-all ui-btn-a">'+opt.cancel+'</a>';
 			}
 			_dialog += '</div>';
 	_dialog += '</div>';
@@ -341,11 +367,11 @@ function _alert(title,msg,fn_yes,fn_no){
 		}
 		this1._dialogObj.remove();
 	});
-	if(fn_no){
+	if(opt.cancel){
 		this1._dialogObj.find('#_cancel').bind('touchend',function(){
-			
+			if(fn_no){
 				fn_no();
-			
+			}
 			this1._dialogObj.remove();
 		});
 	}
@@ -359,10 +385,63 @@ function _alert(title,msg,fn_yes,fn_no){
 </script>
 
 
+<div id="audios" style="display:none;">
+<audio id="au_start" src="audio/start.mp3"  autoplay loop></audio>
+<audio id="au_end" src="audio/end.mp3"  preload></audio>
+<audio id="au_single1" src="audio/single1.mp3"  preload></audio>
+<audio id="au_single2" src="audio/single2.mp3"  preload></audio>
+<audio id="au_single3" src="audio/single3.mp3"  preload></audio>
+<audio id="au_single4" src="audio/single4.mp3"  preload></audio>
+<audio id="au_single5" src="audio/single5.mp3"  preload></audio>
+<audio id="au_single6" src="audio/single6.mp3"  preload></audio>
+<audio id="au_single7" src="audio/single7.mp3"  preload></audio>
+<audio id="au_single8" src="audio/single8.mp3"  preload></audio>
+</div>
 
 
+<script>
+// 微信分享的数据
+window.wxData = {
+    "appId": "", // 服务号可以填写appId
+    "imgUrl":'http://192.168.1.103/cat-mouse/icon.jpg',
+    "link":'http://www.dubox.org/apps/cat-mouse',
+    "desc":"Tom and Jerry 来咱村儿啦！！！",
+    "title":"Tom and Jerry 来咱村儿啦！！！"
+};
 
+function share(score){
+    window.wxData.desc = '哈哈！！我消灭了'+score+'只Jerry，不服气就来挑战吧！';
+};
 
+WeixinApi.ready(function(Api) {
+
+    // 分享的回调
+    var wxCallbacks = {
+        ready : function() {
+			//
+        },
+
+        cancel : function(resp) {
+
+        },
+        fail : function(resp) {
+
+        },
+        confirm : function(resp) {
+
+        },
+        all : function(resp) {
+
+        }
+    };
+
+    Api.shareToFriend(wxData, wxCallbacks);
+
+    Api.shareToTimeline(wxData, wxCallbacks);
+
+    Api.shareToWeibo(wxData, wxCallbacks);
+});
+</script>
 
 
 </body></html>
