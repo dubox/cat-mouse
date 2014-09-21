@@ -269,11 +269,11 @@ function cat_mouse(option){
 			$('._mouse').remove();
 			$('._cat').remove();
 			
-			$('#au_end')[0].play();
+			//$('#au_end')[0].play();	//播放结束音乐
 			setTimeout(function(){
 				share(this1.score);
 				_alert({title:'Game Over',ok:'再玩一次'},'<h2>哈哈！您消灭了'+this1.score+'只Jerry，点击右上角菜单将战绩分享到朋友圈...</h2>',game_start);
-			},6000);
+			},0);
 			
 		}
 	
@@ -384,7 +384,7 @@ function _alert(opt,msg,fn_yes,fn_no){
 
 </script>
 
-
+<!--
 <div id="audios" style="display:none;">
 <audio id="au_start" src="audio/start.mp3"  autoplay loop></audio>
 <audio id="au_end" src="audio/end.mp3"  preload></audio>
@@ -397,7 +397,7 @@ function _alert(opt,msg,fn_yes,fn_no){
 <audio id="au_single7" src="audio/single7.mp3"  preload></audio>
 <audio id="au_single8" src="audio/single8.mp3"  preload></audio>
 </div>
-
+-->
 
 <script>
 // 微信分享的数据
